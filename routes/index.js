@@ -41,7 +41,7 @@ router.get('/', function (req, res, next) {
     //         }
     //     }
     // );
-    var ip = res.param('ip');
+    var ip = req.param('ip');
     var hostaddress = os.hostname();
     res.json({"result": {hostaddress:hostaddress,ip:ip}});
 
