@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-var us = function (name, pass) {
-    this.name = name;
-    this.pass = pass;
+var os = require("os");
+var Users = function Users(id,region_code,region_name){
+
 };
 var userRegister = [];
-var hau = new us("hau", "145632");
-var tan = new us("tan", "123482");
+var hau = new Users("hau", "145632");
+var tan = new Users("tan", "123482");
 
 
 userRegister.push(hau);
@@ -26,17 +26,18 @@ function equals(us) {
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    var name = req.param('name');
-    var code = req.param('code');
+    // var name = req.param('name');
+    // var code = req.param('code');
 
-    var usss = new us(name, code);
-    console.log(equals(usss));
-    if (equals(usss)) {
-        res.json({"result": "success"});
-    } else {
-        res.json({"result": "fail"});
-    }
-
+    var hostaddress = os.hostname();
+    // var usss = new Users(name, code);
+    // console.log(equals(usss));
+    // if (equals(usss)) {
+    //     res.json({"result": "success"});
+    // } else {
+    //     res.json({"result": "fail"});
+    // }
+    res.json({"result": hostaddress});
 });
 
 module.exports = router;
