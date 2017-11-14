@@ -3,7 +3,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var url = require('url');
 var os = require("os");
-var request = require('request');
+
 var Users = function Users(pcname, ip, region_code, latitude, longitude) {
     this.ip = ip;
     this.region_code = region_code;
@@ -74,10 +74,5 @@ router.get('/admin', function (req, res, next) {
     }
 });
 
-router.get('/info', function (req, res, next) {
-    request.get("https://freegeoip.net/json/", function(error, response, body) {
-        res.json({re: JSON.parse(body)});
-    });
-});
 
 module.exports = router;
