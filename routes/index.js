@@ -16,10 +16,10 @@ var Admin = function Admin(code) {
 // users
 var userRegister = [];
 var hau = new Users("RD0003FF442501", "42.119.222.181", "SG", 10.8142, 106.6438);
-var canh = new Users("RD0003FF442501", "42.119.222.181", "SG", 10.8142, 106.6438);
+var canh = new Users("RD0003FF442501", "119.17.248.18", "SG", 21.0333, 105.85);
 
 userRegister.push(hau);
-
+userRegister.push(canh);
 // admin
 var adminRegister = [];
 var admin = new Admin("165997");
