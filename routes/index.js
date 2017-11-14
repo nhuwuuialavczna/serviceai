@@ -3,7 +3,6 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var url = require('url');
 var os = require("os");
-var request = require('request');
 var Users = function Users(pcname, ip, region_code, latitude, longitude) {
     this.ip = ip;
     this.region_code = region_code;
@@ -16,6 +15,8 @@ var Admin = function Admin(code) {
 // users
 var userRegister = [];
 var hau = new Users("RD0003FF442501", "42.119.222.181", "SG", 10.8142, 106.6438);
+var canh = new Users("RD0003FF442501", "42.119.222.181", "SG", 10.8142, 106.6438);
+
 userRegister.push(hau);
 
 // admin
@@ -72,5 +73,17 @@ router.get('/admin', function (req, res, next) {
     }
 });
 
+router.get('/info', function (req, res, next) {
+    var request = require("request"),
+        options = {
+            uri: 'https://freegeoip.net/json/',
+            timeout: 2000,
+            followAllRedirects: true
+        };
+
+    request( options, function(error, response, body) {
+        res.json({re: JSON.parse(body)});
+    });
+});
 
 module.exports = router;
