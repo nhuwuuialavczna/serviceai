@@ -4,7 +4,8 @@ var bodyParser = require('body-parser');
 var url = require('url');
 var os = require("os");
 
-var Users = function Users(pcname, ip, region_code, latitude, longitude) {
+var Users = function Users(name, ip, region_code, latitude, longitude) {
+    this.name = name;
     this.ip = ip;
     this.region_code = region_code;
     this.latitude = latitude;
@@ -15,15 +16,15 @@ var Admin = function Admin(code) {
 };
 // users
 var userRegister = [];
-var hau = new Users("RD0003FF442501", "42.119.222.181", "SG", 10.8142, 106.6438);
-var canh = new Users("RD0003FF442501", "119.17.248.18", "HN", 21.0333, 105.85);
-var anh = new Users("RD0003FF442501", "14.161.6.231", "SG", 10.8142, 106.6438);
+var hau = new Users("Nguyễn Tấn Hậu", "42.119.222.181", "SG", 10.8142, 106.6438);
+var canh = new Users("Phạm Văn Cảnh", "119.17.248.18", "HN", 21.0333, 105.85);
+var anh = new Users("Phan Đức Anh", "14.161.6.231", "SG", 10.8142, 106.6438);
 userRegister.push(hau);
 userRegister.push(canh);
 userRegister.push(anh);
 // admin
 var adminRegister = [];
-var admin = new Admin("165997");
+var admin = new Admin("147258");
 adminRegister.push(admin);
 
 function containUser(us) {
