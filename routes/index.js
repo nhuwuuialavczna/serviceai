@@ -57,6 +57,11 @@ router.get('/', function (req, res, next) {
     }
 });
 
+router.get('/hostname', function (req, res, next) {
+    var hostaddress = os.hostname();
+    res.json({re:hostaddress});
+});
+
 router.get('/admin', function (req, res, next) {
     var code = req.param('code');
     var admin = new Admin(code);
