@@ -10,12 +10,20 @@ var Users = function Users(pcname, ip, region_code, latitude, longitude) {
     this.latitude = latitude;
     this.longitude = longitude;
 };
+var Admin = function Admin(code) {
+    this.code = code;
+};
+// users
 var userRegister = [];
 var hau = new Users("RD0003FF442501", "42.119.222.181", "SG", 10.8142, 106.6438);
-
 userRegister.push(hau);
 
-function contain(us) {
+// admin
+var adminRegister = [];
+var admin = new Admin("165997");
+adminRegister.push(admin);
+
+function containUser(us) {
     for (var i = 0; i < userRegister.length; i++) {
         var t = userRegister[i];
         if (t.name === us.name && t.ip === us.ip && t.region_code === us.region_code && t.latitude === us.latitude && t.longitude === us.longitude) {
@@ -25,25 +33,39 @@ function contain(us) {
     return false;
 }
 
+function containAdmin(admin) {
+    for (var i = 0; i < adminRegister.length; i++) {
+        var t = adminRegister[i];
+        if (t.code === admin.code) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    var ip = req.param('info');
+    var info = req.param('info');
+    var ip = JSON.parse(info);
     var hostaddress = os.hostname();
-    var obj = {
-        pcname: hostaddress,
-        ip: ip.ip,
-        region_code: ip.region_code,
-        latitude: ip.latitude,
-        longitude: ip.longitude
-    };
-    if (contain(obj)) {
+    var obj = new Users(hostaddress,ip.ip,ip.region_code,ip.latitude,ip.longitude);
+    if (containUser(obj)) {
         res.json({re: 'success'});
     } else {
         res.json({re: 'fail'});
     }
 });
 
+router.get('/admin', function (req, res, next) {
+    var code = req.param('code');
+    var admin = new Admin(code);
+    if (containAdmin(admin)) {
+        res.json({re: 'success'});
+    } else {
+        res.json({re: 'fail'});
+    }
+});
 
 
 module.exports = router;
