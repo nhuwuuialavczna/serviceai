@@ -67,11 +67,21 @@ router.get('/', function (req, res) {
 
 router.get('/admin', function (req, res, next) {
     var code = req.param('code');
-    if (code === '147258') {
-        res.json({re: 'success'});
-    } else {
-        res.json({re: 'fail'});
-    }
+    var timeLogin = req.param('timelogin');
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+        var request = new sql.Request();
+        request.query("insert into TimeLogin values('admin','" + timeLogin + "')", function (err, recordset) {
+            if (err) console.log(err);
+            if (code === '147258') {
+                res.json({re: 'success'});
+            } else {
+                res.json({re: 'fail'});
+            }
+            sql.close();
+        });
+    });
+
 });
 
 module.exports = router;
