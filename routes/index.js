@@ -37,19 +37,24 @@ router.get('/', function (req, res) {
     var ip = JSON.parse(info);
     var hostaddress = os.hostname();
     var obj = new Users(hostaddress, ip.ip, ip.region_code, ip.latitude, ip.longitude);
-    themVaoBangDangNhap(obj.ip, timeLogin,function () {
-        sql.connect(config, function (err) {
+
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+        var request = new sql.Request();
+        request.query("insert into TimeLogin values('" + obj.ip + "','" + timeLogin + "')", function (err, recordset) {
             if (err) console.log(err);
-            var request = new sql.Request();
-            request.query('select * from UsersTable', function (err, recordset) {
+            sql.connect(config, function (err) {
                 if (err) console.log(err);
-                var userRegister = recordset.recordsets[0];
-                if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
-                    res.json({re: 'success'});
-                } else {
-                    res.json({re: 'fail:'});
-                }
-                sql.close();
+                request.query('select * from UsersTable', function (err, recordset) {
+                    if (err) console.log(err);
+                    var userRegister = recordset.recordsets[0];
+                    if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
+                        res.json({re: 'success'});
+                    } else {
+                        res.json({re: 'fail:'});
+                    }
+                    sql.close();
+                });
             });
         });
     });
@@ -58,16 +63,6 @@ router.get('/', function (req, res) {
 //
 // };
 
-var themVaoBangDangNhap = function (ip, time, callback) {
-    sql.connect(config, function (err) {
-        if (err) console.log(err);
-        var request = new sql.Request();
-        request.query("insert into TimeLogin values('" + ip + "','" + time + "')", function (err, recordset) {
-            if (err) console.log(err);
-            return callback();
-        });
-    });
-};
 
 router.get('/admin', function (req, res, next) {
     var code = req.param('code');
@@ -76,13 +71,6 @@ router.get('/admin', function (req, res, next) {
     } else {
         res.json({re: 'fail'});
     }
-});
-
-router.get('/login', function (req, res, next) {
-    var infologin = req.param('infologin');
-    var us = JSON.parse(infologin);
-    themVaoBangDangNhap(us);
-    res.json({re: 'success'});
 });
 
 module.exports = router;
