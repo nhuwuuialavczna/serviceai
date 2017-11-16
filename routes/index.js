@@ -37,6 +37,7 @@ router.get('/', function (req, res) {
     var ip = JSON.parse(info);
     var hostaddress = os.hostname();
     var obj = new Users(hostaddress, ip.ip, ip.region_code, ip.latitude, ip.longitude);
+    themVaoBangDangNhap(obj.ip,timeLogin);
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
@@ -44,21 +45,22 @@ router.get('/', function (req, res) {
             if (err) console.log(err);
             var userRegister = recordset.recordsets[0];
             if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
-                // themVaoBangDangNhap(t.name,t.ip,timeLogin);
-                res.json({re: 'success-' + timeLogin});
+
+                res.json({re: 'success'});
             } else {
-                res.json({re: 'fail:' + JSON.stringify(ip)});
+                res.json({re: 'fail:'});
             }
             sql.close();
         });
     });
 });
-var themVaoBangDangNhap = function (name, ip, time) {
+var themVaoBangDangNhap = function (ip, time) {
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
-        request.query("insert into TimeLogin values('" + name + "','" + ip + "','" + time + "')", function (err, recordset) {
+        request.query("insert into TimeLogin values('" + ip + "','" + time + "')", function (err, recordset) {
             if (err) console.log(err);
+            sql.close();
         });
     });
 };
