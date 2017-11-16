@@ -21,7 +21,7 @@ var Users = function Users(name, ip, region_code, latitude, longitude,informatio
 };
 
 
-function containUser(us,userRegister) {
+function containUser(userRegister) {
 
     return false;
 }
@@ -45,7 +45,7 @@ router.get('/', function (req, res) {
                     res.json({re: 'success-'+timeLogin});
                     break;
                 }else{
-                    res.json({re: 'fail:'+timeLogin});
+                    res.json({re: 'fail:'+JSON.stringify(ip)});
                 }
             }
             sql.close();
