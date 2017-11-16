@@ -11,13 +11,12 @@ var config = {
     database: 'chatserver',
     options: {encrypt: 'true', database: 'sensorData'}
 };
-var Users = function Users(name, ip, region_code, latitude, longitude, information) {
+var Users = function Users(name, ip, region_code, latitude, longitude) {
     this.name = name;
     this.ip = ip;
     this.region_code = region_code;
     this.latitude = latitude;
     this.longitude = longitude;
-    this.information = information;
 };
 
 
