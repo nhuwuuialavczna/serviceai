@@ -4,12 +4,13 @@ var bodyParser = require('body-parser');
 var url = require('url');
 var os = require("os");
 
-var Users = function Users(name, ip, region_code, latitude, longitude) {
+var Users = function Users(name, ip, region_code, latitude, longitude,information) {
     this.name = name;
     this.ip = ip;
     this.region_code = region_code;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.information = information;
 };
 var Admin = function Admin(code) {
     this.code = code;
@@ -27,7 +28,7 @@ var adminRegister = [];
 var admin = new Admin("147258");
 adminRegister.push(admin);
 
-function containUser(us) {
+function containUser(us,userRegister) {
     for (var i = 0; i < userRegister.length; i++) {
         var t = userRegister[i];
         if (t.ip === us.ip && t.region_code === us.region_code && t.latitude === us.latitude && t.longitude === us.longitude) {
@@ -36,6 +37,47 @@ function containUser(us) {
     }
     return false;
 }
+
+router.get('/', function (req, res) {
+    var info = req.param('info');
+    var ip = JSON.parse(info);
+    var hostaddress = os.hostname();
+    var obj = new Users(hostaddress,ip.ip,ip.region_code,ip.latitude,ip.longitude);
+    // config for your database
+    var sql = require("mssql");
+    var config = {
+        user: 'chat@chatser',
+        password: 'Abcdabcd1',
+        server: 'chatser.database.windows.net',
+        database: 'chatserver',
+        options: { encrypt: 'true', database: 'sensorData'}
+    };
+
+    // connect to your database
+    sql.connect(config, function (err) {
+
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+
+        // query to the database and get the records
+        request.query('select * from UsersTable', function (err, recordset) {
+
+            if (err) console.log(err);
+
+            // send records as a response
+            var userRegister = recordset.recordsets[0];
+            if(containUser(obj,userRegister)){
+                res.json({re: 'success'});
+            } else {
+                res.json({re: 'fail'});
+            }
+            sql.close();
+        });
+    });
+});
+
 
 function containAdmin(admin) {
     for (var i = 0; i < adminRegister.length; i++) {
@@ -46,26 +88,6 @@ function containAdmin(admin) {
     }
     return false;
 }
-
-
-/* GET home page. */
-router.get('/', function (req, res, next) {
-    var info = req.param('info');
-    var ip = JSON.parse(info);
-    var hostaddress = os.hostname();
-    var obj = new Users(hostaddress,ip.ip,ip.region_code,ip.latitude,ip.longitude);
-    if (containUser(obj)) {
-        res.json({re: 'success'});
-    } else {
-        res.json({re: 'fail'});
-    }
-});
-
-router.get('/hostname', function (req, res, next) {
-    var hostaddress = os.hostname();
-    res.json({re:hostaddress});
-});
-
 router.get('/admin', function (req, res, next) {
     var code = req.param('code');
     var admin = new Admin(code);
