@@ -49,9 +49,9 @@ router.get('/', function (req, res) {
                     if (err) console.log(err);
                     var userRegister = recordset.recordsets[0];
                     if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
-                        res.json({re: 'success'});
+                        res.json({re: 'success',ip:obj.ip});
                     } else {
-                        res.json({re: 'fail:'});
+                        res.json({re: 'fail'});
                     }
                     sql.close();
                 });
@@ -60,9 +60,7 @@ router.get('/', function (req, res) {
         });
     });
 });
-// var dangNhap = function (obj, res) {
-//
-// };
+
 
 
 router.get('/admin', function (req, res, next) {
@@ -83,5 +81,22 @@ router.get('/admin', function (req, res, next) {
     });
 
 });
+
+
+router.get('/sendmessage', function (req, res, next) {
+    var ip = req.param('ip');
+    var message = req.param('message');
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+        var request = new sql.Request();
+        request.query("insert into Message values('"+ip+"','" + message + "')", function (err, recordset) {
+            if (err) res.json({re: 'fail'});
+            res.json({re: 'success'});
+            sql.close();
+        });
+    });
+
+});
+
 
 module.exports = router;
