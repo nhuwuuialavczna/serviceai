@@ -40,7 +40,7 @@ router.get('/', function (req, res) {
             var userRegister = recordset.recordsets[0];
             for (var i = 0; i < userRegister.length; i++) {
                 var t = userRegister[i];
-                if (t.ip === us.ip && t.region_code === us.region_code && t.latitude === us.latitude && t.longitude === us.longitude) {
+                if (t.ip === obj.ip && t.region_code === obj.region_code && t.latitude === obj.latitude && t.longitude === obj.longitude) {
                     // themVaoBangDangNhap(t.name,t.ip,timeLogin);
                     res.json({re: 'success-'+timeLogin});
                 }else{
