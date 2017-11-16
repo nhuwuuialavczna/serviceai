@@ -45,7 +45,7 @@ router.get('/', function (req, res) {
                     res.json({re: 'success-'+timeLogin});
                     break;
                 }else{
-                    res.json({re: 'fail:'+ip});
+                    res.json({re: 'fail:'+timeLogin});
                 }
             }
             sql.close();
