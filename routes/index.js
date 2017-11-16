@@ -86,10 +86,11 @@ router.get('/admin', function (req, res, next) {
 router.get('/sendmessage', function (req, res, next) {
     var ip = req.param('ip');
     var message = req.param('message');
+    var time = req.param('time');
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
-        request.query("insert into Message values('"+ip+"','" + message + "')", function (err, recordset) {
+        request.query("insert into Message values('"+ip+"','" + message + "','"+time+"')", function (err, recordset) {
             if (err) res.json({re: 'fail'});
             res.json({re: 'success'});
             sql.close();
