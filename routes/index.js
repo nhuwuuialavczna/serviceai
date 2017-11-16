@@ -40,24 +40,26 @@ router.get('/', function (req, res) {
 
     sql.connect(config, function (err) {
         if (err) console.log(err);
-        var request = new sql.Request();
-        request.query("insert into TimeLogin values('" + obj.ip + "','" + timeLogin + "')", function (err, recordset) {
+        request.query('select * from UsersTable', function (err, recordset) {
             if (err) console.log(err);
-            sql.connect(config, function (err) {
-                if (err) console.log(err);
-                request.query('select * from UsersTable', function (err, recordset) {
-                    if (err) console.log(err);
-                    var userRegister = recordset.recordsets[0];
-                    if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
-                        res.json({re: 'success'});
-                    } else {
-                        res.json({re: 'fail:'});
-                    }
-                    sql.close();
-                });
-            });
+            var userRegister = recordset.recordsets[0];
+            if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
+                res.json({re: 'success'});
+            } else {
+                res.json({re: 'fail:'});
+            }
+            sql.close();
         });
     });
+
+    // sql.connect(config, function (err) {
+    //     if (err) console.log(err);
+    //     var request = new sql.Request();
+    //     request.query("insert into TimeLogin values('" + obj.ip + "','" + timeLogin + "')", function (err, recordset) {
+    //         if (err) console.log(err);
+    //
+    //     });
+    // });
 });
 // var dangNhap = function (obj, res) {
 //
