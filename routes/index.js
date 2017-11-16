@@ -15,18 +15,6 @@ var Users = function Users(name, ip, region_code, latitude, longitude,informatio
 var Admin = function Admin(code) {
     this.code = code;
 };
-// users
-var userRegister = [];
-var hau = new Users("Nguyễn Tấn Hậu", "42.119.222.181", "SG", 10.8142, 106.6438);
-var canh = new Users("Phạm Văn Cảnh", "119.17.248.18", "HN", 21.0333, 105.85);
-var anh = new Users("Phan Đức Anh", "14.161.6.231", "SG", 10.8142, 106.6438);
-userRegister.push(hau);
-userRegister.push(canh);
-userRegister.push(anh);
-// admin
-var adminRegister = [];
-var admin = new Admin("147258");
-adminRegister.push(admin);
 
 function containUser(us,userRegister) {
     for (var i = 0; i < userRegister.length; i++) {
@@ -53,20 +41,11 @@ router.get('/', function (req, res) {
         options: { encrypt: 'true', database: 'sensorData'}
     };
 
-    // connect to your database
     sql.connect(config, function (err) {
-
         if (err) console.log(err);
-
-        // create Request object
         var request = new sql.Request();
-
-        // query to the database and get the records
         request.query('select * from UsersTable', function (err, recordset) {
-
             if (err) console.log(err);
-
-            // send records as a response
             var userRegister = recordset.recordsets[0];
             if(containUser(obj,userRegister)){
                 res.json({re: 'success'});
@@ -79,19 +58,10 @@ router.get('/', function (req, res) {
 });
 
 
-function containAdmin(admin) {
-    for (var i = 0; i < adminRegister.length; i++) {
-        var t = adminRegister[i];
-        if (t.code === admin.code) {
-            return true;
-        }
-    }
-    return false;
-}
 router.get('/admin', function (req, res, next) {
     var code = req.param('code');
-    var admin = new Admin(code);
-    if (containAdmin(admin)) {
+
+    if (code === '147258') {
         res.json({re: 'success'});
     } else {
         res.json({re: 'fail'});
