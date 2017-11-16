@@ -43,6 +43,7 @@ router.get('/', function (req, res) {
                 if (t.ip === obj.ip && t.region_code === obj.region_code && t.latitude === obj.latitude && t.longitude === obj.longitude) {
                     // themVaoBangDangNhap(t.name,t.ip,timeLogin);
                     res.json({re: 'success-'+timeLogin});
+                    break;
                 }else{
                     res.json({re: 'fail'});
                 }
