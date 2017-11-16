@@ -37,7 +37,7 @@ router.get('/', function (req, res) {
     var ip = JSON.parse(info);
     var hostaddress = os.hostname();
     var obj = new Users(hostaddress, ip.ip, ip.region_code, ip.latitude, ip.longitude);
-    themVaoBangDangNhap(obj.ip,timeLogin);
+    // themVaoBangDangNhap(obj.ip,timeLogin);
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
