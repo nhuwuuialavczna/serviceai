@@ -9,9 +9,9 @@ var config = {
     password: 'Abcdabcd1',
     server: 'chatser.database.windows.net',
     database: 'chatserver',
-    options: { encrypt: 'true', database: 'sensorData'}
+    options: {encrypt: 'true', database: 'sensorData'}
 };
-var Users = function Users(name, ip, region_code, latitude, longitude,information) {
+var Users = function Users(name, ip, region_code, latitude, longitude, information) {
     this.name = name;
     this.ip = ip;
     this.region_code = region_code;
@@ -21,8 +21,13 @@ var Users = function Users(name, ip, region_code, latitude, longitude,informatio
 };
 
 
-function containUser(userRegister) {
-
+function containUser(userRegister, ip, region_code, latitude, longitude) {
+    for (var i = 0; i < userRegister.length; i++) {
+        var t = userRegister[i];
+        if (t.ip === ip && t.region_code === region_code && t.latitude === latitude && t.longitude === longitude) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -31,32 +36,28 @@ router.get('/', function (req, res) {
     var timeLogin = req.param('timelogin');
     var ip = JSON.parse(info);
     var hostaddress = os.hostname();
-    var obj = new Users(hostaddress,ip.ip,ip.region_code,ip.latitude,ip.longitude);
+    var obj = new Users(hostaddress, ip.ip, ip.region_code, ip.latitude, ip.longitude);
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
         request.query('select * from UsersTable', function (err, recordset) {
             if (err) console.log(err);
             var userRegister = recordset.recordsets[0];
-            for (var i = 0; i < userRegister.length; i++) {
-                var t = userRegister[i];
-                if (t.ip === obj.ip && t.region_code === obj.region_code && t.latitude === obj.latitude && t.longitude === obj.longitude) {
-                    // themVaoBangDangNhap(t.name,t.ip,timeLogin);
-                    res.json({re: 'success-'+timeLogin});
-                    break;
-                }else{
-                    res.json({re: 'fail:'+JSON.stringify(ip)});
-                }
+            if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
+                // themVaoBangDangNhap(t.name,t.ip,timeLogin);
+                res.json({re: 'success-' + timeLogin});
+            } else {
+                res.json({re: 'fail:' + JSON.stringify(ip)});
             }
             sql.close();
         });
     });
 });
-var themVaoBangDangNhap = function (name,ip,time) {
+var themVaoBangDangNhap = function (name, ip, time) {
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
-        request.query("insert into TimeLogin values('"+name+"','"+ip+"','"+time+"')", function (err, recordset) {
+        request.query("insert into TimeLogin values('" + name + "','" + ip + "','" + time + "')", function (err, recordset) {
             if (err) console.log(err);
         });
     });
@@ -75,7 +76,7 @@ router.get('/login', function (req, res, next) {
     var infologin = req.param('infologin');
     var us = JSON.parse(infologin);
     themVaoBangDangNhap(us);
-    res.json({re:'success'});
+    res.json({re: 'success'});
 });
 
 module.exports = router;
