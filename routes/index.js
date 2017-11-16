@@ -30,7 +30,7 @@ adminRegister.push(admin);
 function containUser(us) {
     for (var i = 0; i < userRegister.length; i++) {
         var t = userRegister[i];
-        if (t.name === us.name && t.ip === us.ip && t.region_code === us.region_code && t.latitude === us.latitude && t.longitude === us.longitude) {
+        if (t.ip === us.ip && t.region_code === us.region_code && t.latitude === us.latitude && t.longitude === us.longitude) {
             return true;
         }
     }
