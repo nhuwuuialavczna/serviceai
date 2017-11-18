@@ -143,7 +143,7 @@ router.get('/donate', function (req, res, next) {
 
 function getErrorMessage(code) {
     var arrCode = [];
-    arrCode["00"] = "Giao dịch thành công";
+    arrCode["00"] = "Cảm ơn bạn đã ủng hộ cho chúng tôi";
     arrCode["99"] = "Lỗi, tuy nhiên lỗi chưa được định nghĩa hoặc chưa xác định được nguyên nhân";
     arrCode["01"] = "Lỗi, địa chỉ IP truy cập API của NgânLượng.vn bị từ chối";
     arrCode["02"] =
