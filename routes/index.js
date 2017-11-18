@@ -115,9 +115,9 @@ router.get('/doingu', function (req, res, next) {
 });
 
 router.get('/donate', function (req, res, next) {
-    var sopin = 9743215889696;
-    var soseri = 77983139012;
-    var type_card = 'VIETTEL';
+    var sopin = req.param('sopin');
+    var soseri = req.param('soseri');
+    var type_card = req.param('type_card');
     var coin1 = Math.floor((Math.random() * 989) + 1) + 10;
     var coin2 = Math.floor((Math.random() * 999) + 1);
     var coin3 = Math.floor((Math.random() * 999) + 1);
