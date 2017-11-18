@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var url = require('url');
 var os = require("os");
 var sql = require("mssql");
+var request = require('request');
 var config = {
     user: 'chat@chatser',
     password: 'Abcdabcd1',
@@ -49,7 +50,7 @@ router.get('/', function (req, res) {
                     if (err) console.log(err);
                     var userRegister = recordset.recordsets[0];
                     if (containUser(userRegister, obj.ip, obj.region_code, obj.latitude, obj.longitude)) {
-                        res.json({re: 'success',ip:obj.ip});
+                        res.json({re: 'success', ip: obj.ip});
                     } else {
                         res.json({re: 'fail'});
                     }
@@ -60,7 +61,6 @@ router.get('/', function (req, res) {
         });
     });
 });
-
 
 
 router.get('/admin', function (req, res, next) {
@@ -90,7 +90,7 @@ router.get('/sendmessage', function (req, res, next) {
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
-        request.query("insert into Message values('"+ip+"','" + message + "','"+time+"')", function (err, recordset) {
+        request.query("insert into Message values('" + ip + "','" + message + "','" + time + "')", function (err, recordset) {
             if (err) res.json({re: 'fail'});
             res.json({re: 'success'});
             sql.close();
@@ -111,8 +111,66 @@ router.get('/doingu', function (req, res, next) {
             sql.close();
         });
     });
-
+//b40dfa18cfccc6bbd7457659cebd7f85
 });
 
+router.get('/donate', function (req, res, next) {
+    var sopin = 9743215889696;
+    var soseri = 77983139012;
+    var type_card = 'VIETTEL';
+    var coin1 = Math.floor((Math.random() * 989) + 1) + 10;
+    var coin2 = Math.floor((Math.random() * 999) + 1);
+    var coin3 = Math.floor((Math.random() * 999) + 1);
+    var coin4 = Math.floor((Math.random() * 999) + 1);
+    var ref_code = coin4 + coin3 * 1000 + coin2 * 1000000 + coin1 * 100000000;
+
+    var NGANLUONG_URL_CARD_POST = 'https://www.nganluong.vn/mobile_card.api.post.v2.php';
+    var r = NGANLUONG_URL_CARD_POST + "?func=CardCharge&version=2.0&" + "merchant_id=52756&"
+        + "merchant_account=15130052@st.hcmuaf.edu.vn&"
+        + "merchant_password=f795bfd4c4b1fab9a198e0bbd60a8128&" + "pin_card=" + sopin + "&" + "card_serial="
+        + soseri + "&" + "type_card=" + type_card + "&" + "ref_code=" + ref_code + "&"
+        + "client_fullname=&client_email=&client_mobile=";
+
+
+    request(r, {json: true}, function (err, resss, body) {
+        if (err) {
+            res.json({re:"fail"});
+        }
+        var status  = body.split('|');
+        res.json({re:getErrorMessage(status[0])});
+    });
+});
+
+function getErrorMessage(code) {
+    var arrCode = [];
+    arrCode["00"] = "Giao dịch thành công";
+    arrCode["99"] = "Lỗi, tuy nhiên lỗi chưa được định nghĩa hoặc chưa xác định được nguyên nhân";
+    arrCode["01"] = "Lỗi, địa chỉ IP truy cập API của NgânLượng.vn bị từ chối";
+    arrCode["02"] =
+        "Lỗi, tham số gửi từ merchant tới NgânLượng.vn chưa chính xác (thường sai tên tham số hoặc thiếu tham số)";
+    arrCode["03"] = "Lỗi, Mã merchant không tồn tại hoặc merchant đang bị khóa kết nối tới NgânLượng.vn";
+    arrCode["04"] =
+        "Lỗi, Mã checksum không chính xác (lỗi này thường xảy ra khi mật khẩu giao tiếp giữa merchant và NgânLượng.vn không chính xác, hoặc cách sắp xếp các tham số trong biến params không đúng)";
+    arrCode["05"] = "Tài khoản nhận tiền nạp của merchant không tồn tại";
+    arrCode["06"] =
+        "Tài khoản nhận tiền nạp của merchant đang bị khóa hoặc bị phong tỏa, không thể thực hiện được giao dịch nạp tiền";
+    arrCode["07"] = "Thẻ đã được sử dụng ";
+    arrCode["08"] = "Thẻ bị khóa";
+    arrCode["09"] = "Thẻ hết hạn sử dụng";
+    arrCode["10"] = "Thẻ chưa được kích hoạt hoặc không tồn tại";
+    arrCode["11"] = "Mã thẻ sai định dạng";
+    arrCode["12"] = "Sai số serial của thẻ";
+    arrCode["13"] = "Mã thẻ và số serial không khớp";
+    arrCode["14"] = "Thẻ không tồn tại";
+    arrCode["15"] = "Thẻ không sử dụng được";
+    arrCode["16"] = "Số lần thử (nhập sai liên tiếp) của thẻ vượt quá giới hạn cho phép";
+    arrCode["17"] = "Hệ thống Telco bị lỗi hoặc quá tải, thẻ chưa bị trừ";
+    arrCode["18"] =
+        "Hệ thống Telco bị lỗi hoặc quá tải, thẻ có thể bị trừ, cần phối hợp với NgânLượng.vn để tra soát";
+    arrCode["19"] =
+        "Kết nối từ NgânLượng.vn tới hệ thống Telco bị lỗi, thẻ chưa bị trừ (thường do lỗi kết nối giữa NgânLượng.vn với Telco, ví dụ sai tham số kết nối, mà không liên quan đến merchant)";
+    arrCode["20"] = "Kết nối tới telco thành công, thẻ bị trừ nhưng chưa cộng tiền trên NgânLượng.vn";
+    return arrCode[code];
+}
 
 module.exports = router;
