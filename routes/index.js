@@ -99,5 +99,20 @@ router.get('/sendmessage', function (req, res, next) {
 
 });
 
+router.get('/doingu', function (req, res, next) {
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+        var request = new sql.Request();
+        request.query("select * from QuanTri", function (err, recordsets) {
+            if (err) res.json({re: 'fail'});
+            var userRegister = recordsets.recordsets[0];
+            // console.log(userRegister);
+            res.json({re: userRegister});
+            sql.close();
+        });
+    });
+
+});
+
 
 module.exports = router;
