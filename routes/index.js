@@ -71,7 +71,7 @@ router.get('/admin', function (req, res, next) {
         var request = new sql.Request();
         request.query("insert into TimeLogin values('admin','" + timeLogin + "')", function (err, recordset) {
             if (err) console.log(err);
-            if (code === '147258') {
+            if (code === '123456') {
                 res.json({re: 'success'});
             } else {
                 res.json({re: 'fail'});
@@ -81,6 +81,35 @@ router.get('/admin', function (req, res, next) {
     });
 
 });
+
+
+router.get('/TuVungTool/sendiem', function (req, res, next) {
+    var name = req.param('name');
+    var diem = req.param('diem');
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+        var request = new sql.Request();
+        request.query("insert into DiemTuVungTool values('"+name+"','" + diem + "')", function (err, recordset) {
+            if (err) console.log(err);
+            res.send("success");
+            sql.close();
+        });
+    });
+});
+
+router.get('/TuVungTool/BangXepHang', function (req, res, next) {
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+        var request = new sql.Request();
+        request.query("select * from DiemTuVungTool", function (err, recordsets) {
+            if (err) res.json({re: 'fail'});
+            var bangXepHang = recordsets.recordsets[0];
+            res.json({re: bangXepHang});
+            sql.close();
+        });
+    });
+});
+
 
 
 router.get('/sendmessage', function (req, res, next) {
