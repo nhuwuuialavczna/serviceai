@@ -96,7 +96,7 @@ router.get('/TuVungTool/sendiem', function (req, res, next) {
         });
     });
 });
-//hauvv
+//hauvvv
 router.get('/TuVungTool/BangXepHang', function (req, res, next) {
     sql.connect(config, function (err) {
         if (err) console.log(err);
