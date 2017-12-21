@@ -86,14 +86,20 @@ router.get('/admin', function (req, res, next) {
 router.get('/TuVungTool/sendiem', function (req, res, next) {
     var name = req.param('name');
     var diem = req.param('diem');
+    var lanCuoi = req.param('lancuoi');
     sql.connect(config, function (err) {
         if (err) console.log(err);
         var request = new sql.Request();
-        request.query("insert into DiemTuVungTool values('"+name+"','" + diem + "')", function (err, recordset) {
+        request.query("delete from DiemTuVungTool where name='" + name + "'", function (err, recordset) {
             if (err) console.log(err);
-            res.send("success");
-            sql.close();
+            request.query("insert into DiemTuVungTool values('" + name + "','" + diem + "','" + lanCuoi + "')", function (err, recordset) {
+                if (err) console.log(err);
+                res.send("success");
+                sql.close();
+            });
         });
+
+
     });
 });
 //hauvvv
@@ -109,7 +115,6 @@ router.get('/TuVungTool/BangXepHang', function (req, res, next) {
         });
     });
 });
-
 
 
 router.get('/sendmessage', function (req, res, next) {
@@ -163,10 +168,10 @@ router.get('/donate', function (req, res, next) {
 
     request(r, {json: true}, function (err, resss, body) {
         if (err) {
-            res.json({re:"fail"});
+            res.json({re: "fail"});
         }
-        var status  = body.split('|');
-        res.json({re:getErrorMessage(status[0])});
+        var status = body.split('|');
+        res.json({re: getErrorMessage(status[0])});
     });
 });
 
